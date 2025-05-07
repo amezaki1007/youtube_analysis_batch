@@ -2,9 +2,11 @@ import os
 from datetime import datetime, timezone
 from dateutil.relativedelta import relativedelta
 
-def get_api_key(file='', is_env=False):
-  if is_env:
-    return os.getenv('YOUTUBE_API_KEY')
+import isodate
+
+def get_api_key(file='', env_name=None):
+  if env_name:
+    return os.getenv(env_name)
   with open(file) as f:
     return f.read().strip()
 
@@ -35,3 +37,19 @@ def get_season_datetime(year: int, season: str):
   # ミリ秒なしの ISO 8601 + Z 形式に変換
   fmt = "%Y-%m-%dT%H:%M:%SZ"
   return start.strftime(fmt), end.strftime(fmt)
+
+import isodate
+
+def filter_videos_by_duration(videos):
+  filtered = []
+  for video in videos:
+    try:
+      duration_str = video.get("contentDetails", {}).get("duration")
+      if duration_str:
+        duration = isodate.parse_duration(duration_str)
+        if duration.total_seconds() >= 60:
+          filtered.append(video)
+    except Exception as e:
+      # durationのパースに失敗したものは無視
+      continue
+  return filtered

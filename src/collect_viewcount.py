@@ -15,7 +15,7 @@ def get_all_video_ids(connection) -> list[str]:
     
     try:
         for table in ["videos", "recent_videos"]:
-            cursor.execute(f"SELECT video_id FROM {table}")
+            cursor.execute(f"SELECT video_id FROM {table} where status = 'UP'")
             rows = cursor.fetchall()
             video_ids.extend([row[0] for row in rows])
     finally:
@@ -28,10 +28,9 @@ if __name__ == "__main__":
   mysql_conn = connect_to_database()
   video_ids = get_all_video_ids(mysql_conn)
 
-  api_key = get_api_key(is_env=True)
+  api_key = get_api_key(env_name="VIEWCOUNT_API_KEY")
   api_request = ApiRequest(api_key)
   res_json_list = api_request.video_viewcount(video_ids)
   viewcount_entities = [ViewcountEntity.from_json(res_json) for res_json in res_json_list]
-  print(viewcount_entities)
   insert_viewcount_entity_many(viewcount_entities, table_name='viewcounts')
   

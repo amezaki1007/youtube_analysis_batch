@@ -2,6 +2,8 @@ from datetime import datetime, timezone
 
 import requests
 
+from util import filter_videos_by_duration
+
 
 API_BASE_URL = 'https://youtube.googleapis.com/youtube/v3'
 
@@ -31,15 +33,18 @@ class ApiRequest:
       })
     return ret
 
-  def videos(self, video_id_list: list):
+  def videos(self, video_id_list: list, filter_short=True):
     params = {
-      'part': 'snippet',
+      'part': 'snippet,contentDetails',
       'id': ','.join(video_id_list),
       'key': self.api_key,
       'maxResults': 50,
     }
     result = requests.get(url=f'{API_BASE_URL}/videos', params=params)
-    return result.json()['items']
+    if filter_short:
+      return filter_videos_by_duration(result.json()['items'])
+    else:
+      return result.json()['items']
 
   def search(self, num, **kwargs):
     ret = []

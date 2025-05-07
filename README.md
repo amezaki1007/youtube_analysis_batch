@@ -11,6 +11,7 @@ youtube_analysis batch
   - 
 - 各種テーブルのローテート
   - videosで四年前になったものを消す（年1）
+  - recent_videosで一か月前になったものを消す
   - video_viewcountで一年前になったものを消す
 
 その他

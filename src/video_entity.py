@@ -14,6 +14,7 @@ class VideoEntity:
   tags: str
   thumbnail_url: str
   video_type: str
+  status: str
 
   @classmethod
   def from_json(cls, data: dict) -> "VideoEntity":
@@ -52,5 +53,6 @@ class VideoEntity:
       published_at=published_at,
       tags=tags,
       thumbnail_url=thumbnail_url,
-      video_type=video_type
+      video_type=video_type,
+      status="UP"
     )

@@ -1,4 +1,4 @@
- CREATE TABLE recent_videos (
+CREATE TABLE recent_videos (
   id int NOT NULL AUTO_INCREMENT,
   video_id varchar(20) NOT NULL,
   title text,
@@ -10,6 +10,7 @@
   tags text,
   thumbnail_url text,
   video_type varchar(50) DEFAULT NULL,
-  PRIMARY KEY (id)
+  status varchar(10) DEFAULT NULL,
+  PRIMARY KEY (id),
   UNIQUE KEY unique_title (title(255))
-)
+);

@@ -10,6 +10,7 @@ CREATE TABLE videos (
   tags text,
   thumbnail_url text,
   video_type varchar(50) DEFAULT NULL,
+  status varchar(10) DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY unique_title (title(255))
-)
+);
