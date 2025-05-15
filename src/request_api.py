@@ -29,7 +29,7 @@ class ApiRequest:
       ret += result.json()['items']
     for item in ret:
       item.update({
-        'log_date': datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+        'log_date': datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0).date()
       })
     return ret
 

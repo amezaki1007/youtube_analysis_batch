@@ -8,6 +8,7 @@ from mysql_util import insert_video_entity_many
 from util import get_api_key, get_season_datetime
 
 if __name__ == "__main__":
+  num_collect = 250
   target_year = datetime.now().year - 3
   api_key = get_api_key(env_name="ANNUAL_API_KEY")
   api_request = ApiRequest(api_key)
@@ -17,7 +18,7 @@ if __name__ == "__main__":
     'publishedBefore': date_end,
     'publishedAfter': date_begin,
   }
-  res_json_list = api_request.search(num=250, **params)
+  res_json_list = api_request.search(num=num_collect, **params)
   video_entities = [VideoEntity.from_json(res_json) for res_json in res_json_list]
   insert_video_entity_many(video_entities, table_name='videos')
 
@@ -26,7 +27,7 @@ if __name__ == "__main__":
     'publishedBefore': date_end,
     'publishedAfter': date_begin,
   }
-  res_json_list = api_request.search(num=250, **params)
+  res_json_list = api_request.search(num=num_collect, **params)
   video_entities = [VideoEntity.from_json(res_json) for res_json in res_json_list]
   insert_video_entity_many(video_entities, table_name='videos')
 
@@ -36,7 +37,7 @@ if __name__ == "__main__":
     'publishedBefore': date_end,
     'publishedAfter': date_begin,
   }
-  res_json_list = api_request.search(num=250, **params)
+  res_json_list = api_request.search(num=num_collect, **params)
   video_entities = [VideoEntity.from_json(res_json) for res_json in res_json_list]
   insert_video_entity_many(video_entities, table_name='videos')
 
@@ -45,7 +46,7 @@ if __name__ == "__main__":
     'publishedBefore': date_end,
     'publishedAfter': date_begin,
   }
-  res_json_list = api_request.search(num=250, **params)
+  res_json_list = api_request.search(num=num_collect, **params)
   video_entities = [VideoEntity.from_json(res_json) for res_json in res_json_list]
   insert_video_entity_many(video_entities, table_name='videos')
 
@@ -55,7 +56,7 @@ if __name__ == "__main__":
     'publishedBefore': date_end,
     'publishedAfter': date_begin,
   }
-  res_json_list = api_request.search(num=250, **params)
+  res_json_list = api_request.search(num=num_collect, **params)
   video_entities = [VideoEntity.from_json(res_json) for res_json in res_json_list]
   insert_video_entity_many(video_entities, table_name='videos')
 
@@ -64,7 +65,7 @@ if __name__ == "__main__":
     'publishedBefore': date_end,
     'publishedAfter': date_begin,
   }
-  res_json_list = api_request.search(num=250, **params)
+  res_json_list = api_request.search(num=num_collect, **params)
   video_entities = [VideoEntity.from_json(res_json) for res_json in res_json_list]
   insert_video_entity_many(video_entities, table_name='videos')
 
@@ -74,7 +75,7 @@ if __name__ == "__main__":
     'publishedBefore': date_end,
     'publishedAfter': date_begin,
   }
-  res_json_list = api_request.search(num=250, **params)
+  res_json_list = api_request.search(num=num_collect, **params)
   video_entities = [VideoEntity.from_json(res_json) for res_json in res_json_list]
   insert_video_entity_many(video_entities, table_name='videos')
 
@@ -83,6 +84,6 @@ if __name__ == "__main__":
     'publishedBefore': date_end,
     'publishedAfter': date_begin,
   }
-  res_json_list = api_request.search(num=250, **params)
+  res_json_list = api_request.search(num=num_collect, **params)
   video_entities = [VideoEntity.from_json(res_json) for res_json in res_json_list]
   insert_video_entity_many(video_entities, table_name='videos')

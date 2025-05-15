@@ -256,6 +256,7 @@ def insert_viewcount_entity_many(viewcounts: list[ViewcountEntity], connection: 
   inserter = MySQLDataclassInserter(connection)
   try:
     inserter.insert_many(viewcounts, table_name=table_name)
-  except Exception:
+  except Exception as e:
+    print("データリスト挿入エラー:", e)
     for viewcount in viewcounts:
-       insert_viewcount_entity(viewcounts, connection, table_name=table_name)
+       insert_viewcount_entity(viewcount, connection, table_name=table_name)
