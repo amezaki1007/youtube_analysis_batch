@@ -196,6 +196,41 @@ class MySQLDataclassInserter:
     finally:
         cursor.close()
 
+  def filter_videos(self, instances: List[T]) -> List[T]:
+    """
+    hidden テーブルに存在しない video_id のみを返すフィルタ関数
+
+    Args:
+        instances: dataclass インスタンスのリスト（例: Videoのリスト）
+
+    Returns:
+        hidden テーブルに存在しない video_id を持つインスタンスのリスト
+    """
+    if not instances:
+        return []
+
+    # video_id を収集
+    video_ids = [getattr(instance, "video_id", None) for instance in instances]
+    video_ids = [vid for vid in video_ids if vid is not None]
+
+    if not video_ids:
+        return instances
+
+    # SQL で hidden テーブルに存在する video_id を取得
+    format_strings = ','.join(['%s'] * len(video_ids))
+    query = f"SELECT video_id FROM hidden WHERE video_id IN ({format_strings})"
+
+    cursor = self.connection.cursor()
+    try:
+        cursor.execute(query, video_ids)
+        hidden_ids = set(row[0] for row in cursor.fetchall())
+    finally:
+        cursor.close()
+
+    # hidden に存在しない video_id を持つインスタンスのみ返す
+    return [instance for instance in instances if getattr(instance, "video_id", None) not in hidden_ids]
+     
+
 
 def insert_video_entity(video: VideoEntity, connection: mysql.connector.MySQLConnection = None, table_name = None) -> int:
   """
@@ -208,11 +243,15 @@ def insert_video_entity(video: VideoEntity, connection: mysql.connector.MySQLCon
   if connection is None:
     connection = connect_to_database()
   inserter = MySQLDataclassInserter(connection)
-  try:
-    res = inserter.insert(video, table_name=table_name)
-    return res
-  except Exception as e:
-    print("データ挿入エラー:", e)
+  videos_should_be_inserted = inserter.filter_videos([video])
+  if videos_should_be_inserted:
+    try:
+      res = inserter.insert(video, table_name=table_name)
+      return res
+    except Exception as e:
+      print("データ挿入エラー:", e)
+  else:
+    print(f"非表示リストにあるため挿入は行われませんでした: id={video.video_id}, title={video.title}")
 
 def insert_video_entity_many(videos: list[VideoEntity], connection: mysql.connector.MySQLConnection = None, table_name = None) -> int:
   """
@@ -228,10 +267,11 @@ def insert_video_entity_many(videos: list[VideoEntity], connection: mysql.connec
   if connection is None:
     connection = connect_to_database()
   inserter = MySQLDataclassInserter(connection)
+  videos_should_be_inserted = inserter.filter_videos(videos)
   try:
-    inserter.insert_many(videos, table_name=table_name)
+    inserter.insert_many(videos_should_be_inserted, table_name=table_name)
   except Exception:
-    for video in videos:
+    for video in videos_should_be_inserted:
        insert_video_entity(video, connection, table_name=table_name)
 
 def insert_viewcount_entity(viewcount: ViewcountEntity, connection: mysql.connector.MySQLConnection = None, table_name = None) -> int:
