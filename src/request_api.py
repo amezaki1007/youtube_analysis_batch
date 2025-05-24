@@ -18,6 +18,7 @@ class ApiRequest:
       'part': 'statistics',
       'key': self.api_key,
       'maxResults': max_results,
+      'relevanceLanguage': 'ja',
     }
     num_loop = (len(video_id_list) + max_results - 1) // max_results
     for i in range(num_loop):
@@ -54,20 +55,32 @@ class ApiRequest:
       'part': 'snippet',
       'key': self.api_key,
       'type': 'video',
-      'order': 'viewCount',
+      'order': 'relevance',
       'maxResults': max_results,
     })
     next_page_token = ''
-    for _ in range(num_page):
+    for i in range(num_page):
+      if next_page_token == 'END':
+        break
+      print(f"getting page {i}")
       if next_page_token != '':
         kwargs.update({
           'pageToken': next_page_token
         })
       result = requests.get(url=f'{API_BASE_URL}/search', params=kwargs)
       search_results = result.json()['items']
-      next_page_token = result.json()['nextPageToken']
+      try:
+        next_page_token = result.json()['nextPageToken']
+      except Exception as e:
+        print("[WARNING]: ", e)
+        print("there might be not enough search result.")
+        next_page_token = 'END'
       # 追加で欲しい情報（タグなど）を取得
-      video_id_list = [ item['id']['videoId'] for item in search_results ]
+      try:
+        video_id_list = [ item['id']['videoId'] for item in search_results if 'videoId' in item.get('id', {})]
+      except Exception as e:
+        print("response error: ", e)
+        print("search list: ", search_results)
       ret += self.videos(video_id_list)
     for item in ret:
       item.update({
