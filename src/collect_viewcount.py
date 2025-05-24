@@ -21,7 +21,7 @@ def get_all_video_ids(connection) -> list[str]:
     finally:
         cursor.close()
 
-    return video_ids
+    return list(set(video_ids))
 
 
 if __name__ == "__main__":
