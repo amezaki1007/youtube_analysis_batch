@@ -32,7 +32,5 @@ if __name__ == "__main__":
   api_request = ApiRequest(api_key)
   res_json_list = api_request.video_viewcount(video_ids)
   viewcount_entities = [ViewcountEntity.from_json(res_json) for res_json in res_json_list]
-  import pprint
-  pprint.pprint(viewcount_entities)
   insert_viewcount_entity_many(viewcount_entities, table_name='viewcounts')
   
