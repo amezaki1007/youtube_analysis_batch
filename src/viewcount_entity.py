@@ -11,7 +11,11 @@ class ViewcountEntity:
   def from_json(cls, data: dict) -> "ViewcountEntity":
     statistics = data.get("statistics", {})
     video_id = data.get("id")
-    view_count = int(statistics.get("viewCount"))
+    try:
+      view_count = int(statistics.get("viewCount"))
+    except TypeError as e:
+      print("TypeError for viewcount: ", data)
+      view_count = 0
     log_date_raw = data.get("log_date")
 
     # log_date が datetime 型なら date に変換、それ以外ならそのまま使う
